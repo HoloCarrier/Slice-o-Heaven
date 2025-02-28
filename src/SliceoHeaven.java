@@ -5,12 +5,16 @@ public class SliceoHeaven {
     public long storePhone;
     private String storeMenu;
     public double pizzaPrice;
+    public String pizzaOfTheDay;
+    public String sideOfTheDay;
+    public String specialPrice;
 
     private String ordersides;
     private String orderdrinks;
     private String orderID;
     private double orderTotal;
     private String pizzaIngredients;
+    private String cardNumber;
     private static final String DEF_ORDER_ID = "DEF-SOH-099";
     private static final double DEF_ORDER_TOTAL = 15.00;
     public static final String DEF_PIZZA_INGREDIENTS = "Mozzarella Cheese";
@@ -33,6 +37,31 @@ public class SliceoHeaven {
         System.out.println("Your order is ready!");
 
         printReceipt();
+    }
+    //添加 processCardPayment()方法
+    public void processCardPayment(String cardNumber,String expiryDate,int cvv) {
+        System.out.println("Processing credit cardNumber");
+        int cardNumberLength = cardNumber.length();
+        if (cardNumberLength == 14){
+            System.out.println("Valid card number");
+        } else {
+            System.out.println("Invalid card number");
+            return;
+        }
+        //获取卡号第一个字符并转化为整数
+        int firstcardDigit = Integer.parseInt(cardNumber.substring(0, 1));
+        //判断是否为黑名单卡号
+        String blackListCardNumber = "1234567890123456";
+        if (cardNumber.equals(blackListCardNumber)) {
+            System.out.println("Card number is blacklisted");
+            return;
+        }
+        //获取卡号后四位并转化为整数
+        int lastFourDigits = Integer.parseInt(cardNumber.substring(cardNumberLength - 4));
+        //处理卡号字符并保存
+        String cardNumberToDisplay = cardNumber.charAt(0) + cardNumber.substring(1,cardNumber.length() -4).replaceAll(",","*") +
+                cardNumber.substring(cardNumberLength - 4);
+        System.out.println("Card number: " + cardNumberToDisplay);
     }
 
     // 设置Getter和Setter方法
@@ -76,6 +105,11 @@ public class SliceoHeaven {
     private void makePizza() {
         this.pizzaIngredients = DEF_PIZZA_INGREDIENTS;
     }
+    public static void specialOfTheDay(String pizzaOfTheDay, String sideOfTheDay, String specialPrice){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Today's special: ").append(pizzaOfTheDay).append(" with ").append(sideOfTheDay).append(" for only $").append(specialPrice).append("!");
+        System.out.println(sb.toString());
+    }
 
     private void printReceipt() {
         System.out.println("********RECEIPT********");
@@ -88,6 +122,8 @@ public class SliceoHeaven {
         System.out.println("storeAddress:" + storeAddress);
         System.out.println("storephone:" + storePhone);
         System.out.println("storeemail:" + storeEmail);
+        //设置specialOfTheDay()方法
+
     }
 }
 
