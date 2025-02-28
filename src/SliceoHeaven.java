@@ -105,6 +105,7 @@ public class SliceoHeaven {
     private void makePizza() {
         this.pizzaIngredients = DEF_PIZZA_INGREDIENTS;
     }
+    //设置specialOfTheDay()方法
     public static void specialOfTheDay(String pizzaOfTheDay, String sideOfTheDay, String specialPrice){
         StringBuilder sb = new StringBuilder();
         sb.append("Today's special: ").append(pizzaOfTheDay).append(" with ").append(sideOfTheDay).append(" for only $").append(specialPrice).append("!");
@@ -122,10 +123,15 @@ public class SliceoHeaven {
         System.out.println("storeAddress:" + storeAddress);
         System.out.println("storephone:" + storePhone);
         System.out.println("storeemail:" + storeEmail);
-        //设置specialOfTheDay()方法
 
-    }
-}
+
+
+
+
+            }
+        }
+
+
 
 
 
