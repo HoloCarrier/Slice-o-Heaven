@@ -1,3 +1,6 @@
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.Scanner;
 public class SliceoHeaven {
     public String storeName;
     public String storeAddress;
@@ -18,50 +21,108 @@ public class SliceoHeaven {
     private static final String DEF_ORDER_ID = "DEF-SOH-099";
     private static final double DEF_ORDER_TOTAL = 15.00;
     public static final String DEF_PIZZA_INGREDIENTS = "Mozzarella Cheese";
-
-    public void takeorder(String id, String sides, String drinks, double total) {
-        orderdrinks = drinks;
-        this.orderID = DEF_ORDER_ID;
-        ordersides = sides;
-        this.orderTotal = DEF_ORDER_TOTAL;
-        System.out.println("Order accepted!");
-
-        System.out.println("Order is being prepared");
-
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            System.out.println("Order is ready for pickup!");
+//添加takeorder方法
+    public void takeorder() {
+         String orderTotal = "";
+        System.out.println("Enter three ingredients for your pizza (use spaces to separate\n" +
+                " ingredients):");
+        Scanner scanner = new Scanner(System.in);
+        String[] ingredients = scanner.nextLine().split("");
+        String ing1 = ingredients[0];
+        String ing2 = ingredients[1];
+        String ing3 = ingredients[2];
+        //输入pizza尺寸
+        System.out.println("Enter size of pizza (Small, Medium, Large):");
+        String pizzaSize= scanner.nextLine();
+        System.out.println("Do you want extra cheese (Y/N):");
+        String extraCheese = scanner.nextLine();
+        System.out.println( "Enter one side dish (Calzone, Garlic bread, None):");
+        String sideDish = scanner.nextLine();
+        System.out.println("Enter drinks(Cold Coffee, Cocoa drink, Coke, None):");
+        String drinks = scanner.nextLine();
+        System.out.println("Would you like the chance to pay only half for your order? (Y/N):");
+        String wantDiscount = scanner.nextLine();
+        //查看用户输入是Y或N并且调用isItYourBirthday()方法
+        if (wantDiscount.equalsIgnoreCase("Y")) {
+            if (isItYourBirthday()) {
+                System.out.println("Your order is half price!");
+            } else
+             {
+                 makeCardPayment();
+                System.out.println("Sorry, you don't qualify for the 50% discount.");
+            }
         }
 
-        System.out.println("Your order is ready!");
 
-        printReceipt();
+
     }
+    //创建 isItYourBirthday()方法
+    public static boolean isItYourBirthday(){
+        System.out.println("Enter your birthdate (YYYY-MM-DD):");
+        Scanner scanner = new Scanner(System.in);
+        String birthday = scanner.nextLine();
+        String birthdate = birthday;
+        int year = Integer.parseInt(birthdate.substring(0, 4));
+        int month = Integer.parseInt(birthdate.substring(5, 7));
+        int day = Integer.parseInt(birthdate.substring(8, 10));
+        LocalDate dob = LocalDate.of(year, month, day);
+        LocalDate now = LocalDate.now();
+        Period diff = Period.between(dob, now);//判断是否小于十八岁并且今天是否是他的生日
+        if (diff.getYears() >= 18 && dob.getMonthValue() == now.getMonthValue() && dob.getDayOfMonth() == now.getDayOfMonth()) {
+            System.out.println("Congratulations! You pay only half the price for your order");
+            return true;}
+            else {
+                System.out.println("Too bad! You do not meet the conditions to get our 50% discount");
+                return false;
+            }
+    }
+    //创建makeCardPayment()
+    public void makeCardPayment() {
+        System.out.println("Please give your cardNumber");
+        Scanner scanner = new Scanner(System.in);
+        Long cardNumber = Long.valueOf(scanner.nextLine());
+        System.out.println("Please give your expiryDate");
+        String expiryDate = scanner.nextLine();
+        System.out.println("Please give your cvv");
+        int cvv = Integer.parseInt(scanner.nextLine());
+        //限制cvv长度为3
+        if (String.valueOf(cvv).length() == 3) {
+            System.out.println("Valid cvv");
+        } else {
+            System.out.println("Invalid cvv");
+            return;
+        }
+
+
+    }
+
     //添加 processCardPayment()方法
-    public void processCardPayment(String cardNumber,String expiryDate,int cvv) {
+    public void processCardPayment(Long cardNumber,String expiryDate,int cvv) {
         System.out.println("Processing credit cardNumber");
-        int cardNumberLength = cardNumber.length();
-        if (cardNumberLength == 14){
+        String cardNumberStr = Long.toString(cardNumber);
+        if (cardNumberStr.length() == 14){
             System.out.println("Valid card number");
         } else {
             System.out.println("Invalid card number");
             return;
         }
         //获取卡号第一个字符并转化为整数
-        int firstcardDigit = Integer.parseInt(cardNumber.substring(0, 1));
+        char firstCardDigit = cardNumberStr.charAt(0);
+        System.out.println("First card digit: " + firstCardDigit);
+
         //判断是否为黑名单卡号
-        String blackListCardNumber = "1234567890123456";
-        if (cardNumber.equals(blackListCardNumber)) {
-            System.out.println("Card number is blacklisted");
+        long blacklistedNumbers = 1234567890;
+        if (cardNumber == blacklistedNumbers) {
+            System.out.println("Card number is blacklisted,Please use another card");
             return;
         }
         //获取卡号后四位并转化为整数
-        int lastFourDigits = Integer.parseInt(cardNumber.substring(cardNumberLength - 4));
-        //处理卡号字符并保存
-        String cardNumberToDisplay = cardNumber.charAt(0) + cardNumber.substring(1,cardNumber.length() -4).replaceAll(",","*") +
-                cardNumber.substring(cardNumberLength - 4);
-        System.out.println("Card number: " + cardNumberToDisplay);
+        String lastFourDigits = cardNumberStr.substring(cardNumberStr.length() - 4);
+        int lastFourDigitsInt = Integer.parseInt(lastFourDigits);
+        String cardNumberToDisplay = cardNumberStr.charAt(0) + "******" + cardNumberStr.substring(cardNumberStr.length() -4);
+        System.out.println("" + cardNumberToDisplay);
+
+
     }
 
     // 设置Getter和Setter方法
@@ -112,7 +173,7 @@ public class SliceoHeaven {
         System.out.println(sb.toString());
     }
 
-    private void printReceipt() {
+    private  void printReceipt() {
         System.out.println("********RECEIPT********");
 
         System.out.println("Order ID: " + orderID);
